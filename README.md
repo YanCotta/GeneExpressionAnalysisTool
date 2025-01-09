@@ -54,7 +54,7 @@ Performs PCA on the gene expression data and returns the principal components an
 ### `kmeans_clustering(data: np.ndarray, n_clusters: int) -> Tuple[np.ndarray, KMeans]`
 Applies K-means clustering to the PCA-transformed data and returns the cluster labels and the fitted K-means model.
 
-### visualize_results(principal_components: np.ndarray, labels: np.ndarray, pca_model: PCA, original_data: pd.DataFrame) -> None
+### `visualize_results(principal_components: np.ndarray, labels: np.ndarray, pca_model: PCA, original_data: pd.DataFrame) -> None`
 Creates comprehensive visualizations of the analysis results, including PCA scatter plots and explained variance plots.
 
 ## Visualizations
