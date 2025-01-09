@@ -1,5 +1,5 @@
 ## Gene Expression Analysis Tool
-This repository contains a Python script for analyzing gene expression data using various machine learning and data science techniques. The script performs data preprocessing, dimensionality reduction using PCA, clustering using K-means, and visualizes the results. This tool is designed to showcase the intersection of biology, data science, and AI skills.
+This repository contains a Python script for analyzing gene expression data using various machine learning and data science techniques. The script performs data preprocessing, dimensionality reduction using PCA, clustering using K-means, and visualizes the results. This tool is designed to showcase the intersection of biology and  data science skills.
 
 ## Biological Context
 This code is the first step in analyzing gene expression data:
