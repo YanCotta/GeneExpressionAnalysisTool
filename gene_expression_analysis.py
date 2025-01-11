@@ -1,12 +1,19 @@
 import pandas as pd
 import numpy as np
-from typing import Tuple
+from typing import Tuple, List, Dict
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy import stats
+from scipy.cluster.hierarchy import dendrogram, linkage
+import scipy.stats as stats
+from statsmodels.stats.multitest import multipletests
+import combat
+from goatools import GOEnrichmentStudy
+from goatools.obo_parser import GODag
 
 def load_and_preprocess_data(file_path: str, min_expression: float = 0.1) -> pd.DataFrame:
     """
@@ -93,16 +100,124 @@ def cluster_data(data: np.ndarray, n_clusters: int = 3) -> Tuple[np.ndarray, KMe
     
     return labels, kmeans
 
-def visualize_results(principal_components: np.ndarray, labels: np.ndarray, pca_model: PCA, original_data: pd.DataFrame) -> None:
+def perform_differential_expression(data: pd.DataFrame, group1_ids: List[str], group2_ids: List[str], adj_p_threshold: float = 0.05) -> pd.DataFrame:
     """
-    Creates comprehensive visualizations of the analysis results.
+    Performs differential expression analysis between two groups using t-test.
     
     Args:
-        principal_components (np.ndarray): PCA-transformed data
-        labels (np.ndarray): Cluster labels
-        pca_model (PCA): Fitted PCA model
-        original_data (pd.DataFrame): Original gene expression data
+        data (pd.DataFrame): Gene expression data
+        group1_ids (List[str]): Sample IDs for group 1
+        group2_ids (List[str]): Sample IDs for group 2
+        adj_p_threshold (float): Adjusted p-value threshold
+    
+    Returns:
+        pd.DataFrame: Differential expression results
     """
+    results = []
+    for gene in data.columns:
+        group1_expr = data.loc[group1_ids, gene]
+        group2_expr = data.loc[group2_ids, gene]
+        
+        t_stat, p_val = stats.ttest_ind(group1_expr, group2_expr)
+        log2fc = np.log2(group1_expr.mean() / group2_expr.mean())
+        
+        results.append({
+            'gene': gene,
+            'log2FoldChange': log2fc,
+            'pvalue': p_val,
+            't_statistic': t_stat
+        })
+    
+    results_df = pd.DataFrame(results)
+    # Multiple testing correction
+    results_df['padj'] = multipletests(results_df['pvalue'], method='fdr_bh')[1]
+    return results_df.sort_values('padj')
+
+def correct_batch_effects(data: pd.DataFrame, batch_labels: List[str]) -> pd.DataFrame:
+    """
+    Corrects for batch effects using ComBat algorithm.
+    
+    Args:
+        data (pd.DataFrame): Gene expression data
+        batch_labels (List[str]): Batch information for each sample
+    
+    Returns:
+        pd.DataFrame: Batch-corrected expression data
+    """
+    # Convert data to appropriate format for ComBat
+    combat_data = pd.DataFrame(combat.combat(data.T.values, batch_labels))
+    combat_data.index = data.columns
+    combat_data.columns = data.index
+    return combat_data.T
+
+def perform_hierarchical_clustering(data: pd.DataFrame) -> Dict:
+    """
+    Performs hierarchical clustering with dendrograms.
+    
+    Args:
+        data (pd.DataFrame): Gene expression data
+    
+    Returns:
+        Dict: Dictionary containing linkage matrices for samples and genes
+    """
+    # Cluster samples
+    sample_linkage = linkage(data, method='ward', metric='euclidean')
+    # Cluster genes
+    gene_linkage = linkage(data.T, method='ward', metric='euclidean')
+    
+    return {'sample_linkage': sample_linkage, 'gene_linkage': gene_linkage}
+
+def create_volcano_plot(de_results: pd.DataFrame, fc_threshold: float = 1.0, p_threshold: float = 0.05) -> None:
+    """
+    Creates a volcano plot from differential expression results.
+    
+    Args:
+        de_results (pd.DataFrame): Differential expression results
+        fc_threshold (float): Log2 fold change threshold
+        p_threshold (float): Adjusted p-value threshold
+    """
+    plt.figure(figsize=(10, 8))
+    
+    # Create scatter plot
+    plt.scatter(de_results['log2FoldChange'], -np.log10(de_results['padj']), alpha=0.5)
+    
+    # Add threshold lines
+    plt.axhline(-np.log10(p_threshold), color='r', linestyle='--')
+    plt.axvline(-fc_threshold, color='r', linestyle='--')
+    plt.axvline(fc_threshold, color='r', linestyle='--')
+    
+    plt.xlabel('log2 Fold Change')
+    plt.ylabel('-log10(adjusted p-value)')
+    plt.title('Volcano Plot of Differential Expression')
+    plt.show()
+
+def calculate_quality_metrics(data: pd.DataFrame) -> Dict:
+    """
+    Calculates various quality control metrics for the expression data.
+    
+    Args:
+        data (pd.DataFrame): Gene expression data
+    
+    Returns:
+        Dict: Dictionary containing QC metrics
+    """
+    metrics = {
+        'sample_correlation': data.corr().mean().mean(),
+        'genes_detected': (data > 0).sum(axis=0),
+        'expression_range': data.max() - data.min(),
+        'coefficient_variation': data.std() / data.mean(),
+        'missing_values': data.isnull().sum()
+    }
+    return metrics
+
+def visualize_results(principal_components: np.ndarray, labels: np.ndarray, pca_model: PCA, original_data: pd.DataFrame, qc_metrics: Dict = None) -> None:
+    """
+    Enhanced visualization function with additional plots.
+    """
+    plt.style.use('seaborn')
+    fig = plt.figure(figsize=(20, 15))
+    
+    # Original plots
     # Set up the plotting style
     plt.style.use('seaborn')
     
@@ -131,12 +246,27 @@ def visualize_results(principal_components: np.ndarray, labels: np.ndarray, pca_
     sns.heatmap(original_data[top_features.index].corr(), ax=ax3, cmap='coolwarm')
     ax3.set_title('Top Features Correlation')
     
+    # Add QC visualization if metrics are provided
+    if qc_metrics:
+        ax4 = fig.add_subplot(234)
+        sns.boxplot(data=original_data, ax=ax4)
+        ax4.set_title('Expression Distribution by Sample')
+        ax4.set_xticklabels(ax4.get_xticklabels(), rotation=45)
+        
+        ax5 = fig.add_subplot(235)
+        sns.histplot(data=qc_metrics['coefficient_variation'], ax=ax5)
+        ax5.set_title('Coefficient of Variation Distribution')
+        
+        ax6 = fig.add_subplot(236)
+        sns.heatmap(original_data.corr(), ax=ax6, cmap='coolwarm')
+        ax6.set_title('Sample Correlation Matrix')
+    
     plt.tight_layout()
     plt.show()
 
 def main():
     """
-    Main function demonstrating the complete gene expression analysis pipeline.
+    Enhanced main function with additional analyses.
     """
     try:
         # Load and preprocess data
@@ -144,6 +274,28 @@ def main():
         # Use the full path to your CSV file
         file_path = r"C:\Users\yanpc\OneDrive\Desktop\gene_expression_data.csv"
         df = load_and_preprocess_data(file_path)
+        
+        # Calculate QC metrics
+        print("\nCalculating quality metrics...")
+        qc_metrics = calculate_quality_metrics(df)
+        
+        # Perform batch correction if needed
+        # batch_labels = [...] # Add your batch labels here
+        # df = correct_batch_effects(df, batch_labels)
+        
+        # Perform differential expression analysis
+        print("\nPerforming differential expression analysis...")
+        # Define your groups
+        # group1_ids = [...]
+        # group2_ids = [...]
+        # de_results = perform_differential_expression(df, group1_ids, group2_ids)
+        
+        # Create volcano plot
+        # create_volcano_plot(de_results)
+        
+        # Perform hierarchical clustering
+        print("\nPerforming hierarchical clustering...")
+        hierarch_results = perform_hierarchical_clustering(df)
         
         # Perform PCA
         print("\nPerforming PCA...")
@@ -153,9 +305,9 @@ def main():
         print("\nPerforming clustering...")
         labels, kmeans_model = cluster_data(principal_components)
         
-        # Visualize results
+        # Enhanced visualization with QC metrics
         print("\nGenerating visualizations...")
-        visualize_results(principal_components, labels, pca_model, df)
+        visualize_results(principal_components, labels, pca_model, df, qc_metrics)
         
     except Exception as e:
         print(f"Error in analysis pipeline: {str(e)}")

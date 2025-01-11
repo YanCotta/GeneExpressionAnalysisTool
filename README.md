@@ -1,7 +1,9 @@
-## Gene Expression Analysis Tool
-This repository contains a Python script for analyzing gene expression data using various machine learning and data science techniques. The script performs data preprocessing, dimensionality reduction using PCA, clustering using K-means, and visualizes the results. This tool is designed to showcase the intersection of biology and  data science skills.
+# Gene Expression Analysis Tool
+
+A comprehensive Python tool for analyzing gene expression data with advanced bioinformatics capabilities.
 
 ## Biological Context
+
 This code is the first step in analyzing gene expression data:
 - Loads your expression matrix
 - Filters out noise (low expressing genes)
@@ -13,61 +15,103 @@ It's similar to:
 3. Preparing data for DESeq2 or edgeR analysis
 
 ## Features
-- **Data Preprocessing**: Cleans and normalizes gene expression data.
-- **Dimensionality Reduction**: Uses Principal Component Analysis (PCA) to reduce the dimensionality of the data.
-- **Clustering**: Applies K-means clustering to identify patterns in the gene expression data.
-- **Visualization**: Generates comprehensive visualizations to interpret the results.
+
+- Data preprocessing and quality control
+  - Log2 transformation
+  - Missing value handling
+  - Low expression filtering
+  - Quality metrics calculation
+  - Batch effect correction
+
+- Dimensionality Reduction
+  - Principal Component Analysis (PCA)
+  - Explained variance analysis
+  - Feature importance visualization
+
+- Clustering Analysis
+  - K-means clustering
+  - Hierarchical clustering with dendrograms
+  - Silhouette score evaluation
+
+- Differential Expression Analysis
+  - T-test based comparison
+  - Multiple testing correction (FDR)
+  - Volcano plot visualization
+  - Fold change analysis
+
+- Visualization
+  - PCA scatter plots
+  - Correlation heatmaps
+  - Expression distribution plots
+  - Sample quality metrics
+  - Hierarchical clustering dendrograms
+
+## Installation
+
+```bash
+# Install required packages
+pip install pandas numpy scikit-learn matplotlib seaborn scipy statsmodels combat-py goatools
+```
 
 ## Usage
-### Prerequisites
-- Python 3.x
-- Required Python packages: `numpy`, `pandas`, `matplotlib`, `scikit-learn`, `seaborn`
 
-### Installation
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/yourusername/gene-expression-analysis-tool.git
-    cd gene-expression-analysis-tool
-    ```
+### Basic Analysis Pipeline
 
-2. Install the required packages:
-    ```sh
-    pip install -r requirements.txt
-    ```
+```python
+from gene_expression_analysis import *
 
-### Running the Script
-1. Prepare your gene expression data in a CSV file format.
-2. Run the script:
-    ```sh
-    python gene_expression_analysis.py --input your_data.csv
-    ```
+# Load and preprocess data
+data = load_and_preprocess_data("expression_data.csv")
 
+# Perform PCA
+pcs, pca_model = perform_pca(data)
 
-## Functions
+# Cluster data
+labels, kmeans = cluster_data(pcs)
 
-### `preprocess_data(file_path: str) -> pd.DataFrame`
-Loads and preprocesses the gene expression data from a CSV file.
+# Visualize results
+visualize_results(pcs, labels, pca_model, data)
+```
 
-### `perform_pca(data: pd.DataFrame, n_components: int) -> Tuple[np.ndarray, PCA]`
-Performs PCA on the gene expression data and returns the principal components and the fitted PCA model.
+### Advanced Features
 
-### `kmeans_clustering(data: np.ndarray, n_clusters: int) -> Tuple[np.ndarray, KMeans]`
-Applies K-means clustering to the PCA-transformed data and returns the cluster labels and the fitted K-means model.
+```python
+# Differential Expression Analysis
+de_results = perform_differential_expression(data, group1_ids=['sample1', 'sample2'], group2_ids=['sample3', 'sample4'])
+create_volcano_plot(de_results)
 
-### `visualize_results(principal_components: np.ndarray, labels: np.ndarray, pca_model: PCA, original_data: pd.DataFrame) -> None`
-Creates comprehensive visualizations of the analysis results, including PCA scatter plots and explained variance plots.
+# Batch Effect Correction
+batch_labels = ['batch1', 'batch1', 'batch2', 'batch2']
+corrected_data = correct_batch_effects(data, batch_labels)
 
-## Visualizations
-The script generates the following visualizations:
+# Quality Control
+qc_metrics = calculate_quality_metrics(data)
 
-1. **PCA Scatter Plot with Clusters**: Displays the PCA-transformed data with cluster labels.
-2. **Explained Variance Plot**: Shows the variance explained by each principal component.
+# Hierarchical Clustering
+hierarch_results = perform_hierarchical_clustering(data)
+```
+
+## Data Format
+
+Input CSV file should have the following format:
+- First column: Sample_ID (used as index)
+- Subsequent columns: Gene expression values
+- Header row with gene names
+
+Example:
+```
+Sample_ID,Gene1,Gene2,Gene3
+Sample1,5.2,3.1,4.5
+Sample2,6.1,2.8,4.2
+```
 
 ## Contributing
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+
+Feel free to submit issues, fork the repository, and create pull requests for any improvements.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact
 For any questions or inquiries, please contact yanpcotta@gmail.com
@@ -75,3 +119,23 @@ For any questions or inquiries, please contact yanpcotta@gmail.com
 ---
 
 This project demonstrates the intersection of biology and data science, showcasing skills in bioinformatics, machine learning, and data visualization.
+
+# Changelog
+
+## Gene Expression Analysis Tool v2.0
+### Added
+- ComBat-based batch effect correction
+- Comprehensive QC metrics suite
+- Hierarchical clustering with dendrograms
+- Enhanced visualization pipeline
+- Multiple testing correction (FDR)
+- Silhouette score analysis for clustering
+- Type hints for all functions
+- Comprehensive error handling
+- Input validation checks
+
+### Changed
+- Improved PCA visualization
+- Enhanced documentation
+- Optimized data preprocessing
+- Updated dependency requirements
