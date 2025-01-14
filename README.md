@@ -1,95 +1,132 @@
 # Gene Expression Analysis Tool
 
-A comprehensive Python tool for analyzing gene expression data with advanced bioinformatics capabilities.
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Build Status](https://github.com/username/GeneExpressionAnalysisTool/workflows/build/badge.svg)](https://github.com/username/GeneExpressionAnalysisTool/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Biological Context
+A high-performance Python toolkit for comprehensive gene expression analysis, featuring advanced statistical methods and machine learning algorithms.
 
-This code is the first step in analyzing gene expression data:
-- Loads your expression matrix
-- Filters out noise (low expressing genes)
-- Prepares data for downstream analysis (like differential expression or clustering)
+## 🧬 Overview
 
-It's similar to:
-1. Loading your raw RNA-seq counts
-2. Removing genes with too few reads
-3. Preparing data for DESeq2 or edgeR analysis
+This toolkit provides a robust framework for analyzing gene expression data, implementing state-of-the-art bioinformatics methodologies. It's designed for both research and production environments, with emphasis on performance, reliability, and reproducibility.
 
-## Features
+## ✨ Key Features
 
-- Data preprocessing and quality control
-  - Log2 transformation
-  - Missing value handling
-  - Low expression filtering
-  - Quality metrics calculation
-  - Batch effect correction
+### Data Processing Engine
+- Intelligent missing value imputation using KNN or MICE algorithms
+- Robust outlier detection using MAD (Median Absolute Deviation)
+- Automated batch effect correction via ComBat-seq
+- Smart low-expression filtering with adaptive thresholds
 
-- Dimensionality Reduction
-  - Principal Component Analysis (PCA)
-  - Explained variance analysis
-  - Feature importance visualization
+### Statistical Analysis
+- Differential expression analysis using limma-trend methodology
+- Multiple testing correction (Benjamini-Hochberg FDR)
+- Power analysis and sample size estimation
+- Robust normalization (TMM, RLE, or quantile methods)
 
-- Clustering Analysis
-  - K-means clustering
-  - Hierarchical clustering with dendrograms
-  - Silhouette score evaluation
+### Dimensionality Reduction
+- Principal Component Analysis (PCA)
+- Explained variance analysis
+- Feature importance visualization
 
-- Differential Expression Analysis
-  - T-test based comparison
-  - Multiple testing correction (FDR)
-  - Volcano plot visualization
-  - Fold change analysis
+### Clustering Analysis
+- K-means clustering
+- Hierarchical clustering with dendrograms
+- Silhouette score evaluation
 
-- Visualization
-  - PCA scatter plots
-  - Correlation heatmaps
-  - Expression distribution plots
-  - Sample quality metrics
-  - Hierarchical clustering dendrograms
+### Visualization
+- PCA scatter plots
+- Correlation heatmaps
+- Expression distribution plots
+- Sample quality metrics
+- Hierarchical clustering dendrograms
 
-## Installation
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8+
+- 4GB RAM minimum (8GB recommended for large datasets)
+- CUDA-capable GPU (optional, for accelerated computing)
+
+### Environment Setup
+```bash
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install using pip
+pip install gene-expression-tool
+
+# Optional: Install GPU support
+pip install gene-expression-tool[gpu]
+```
+
+### Example Pipeline
+```python
+from gene_expression_tool import ExpressionAnalysis
+
+# Initialize with advanced configuration
+analysis = ExpressionAnalysis(
+    normalization_method='tmm',
+    batch_correction=True,
+    n_jobs=-1  # Use all CPU cores
+)
+
+# Load data with automatic format detection
+data = analysis.load_data(
+    'expression_matrix.csv',
+    sample_metadata='metadata.csv',
+    verify_integrity=True
+)
+
+# Run complete analysis pipeline
+results = analysis.run_pipeline(
+    min_expression=5,
+    fdr_threshold=0.05,
+    save_intermediates=True
+)
+```
+
+## 🔍 Performance Considerations
+
+- Memory usage scales with O(n²) for correlation matrices
+- Supports chunked processing for large datasets
+- GPU acceleration available for PCA and clustering
+- Parallel processing for CPU-intensive operations
+
+## 🛠 Troubleshooting
+
+Common issues and solutions:
+
+1. Memory Errors
+```python
+# Reduce memory usage
+analysis.set_config(use_sparse_matrices=True)
+```
+
+2. Performance Issues
+```python
+# Enable performance optimization
+analysis.enable_gpu()
+analysis.set_chunk_size(1000)
+```
+
+## 🧪 Testing
 
 ```bash
-# Install required packages
-pip install pandas numpy scikit-learn matplotlib seaborn scipy statsmodels combat-py goatools
+# Run test suite
+pytest tests/
+
+# Run with coverage
+pytest --cov=gene_expression_tool tests/
 ```
 
-## Usage
+## 📚 Documentation
 
-### Basic Analysis Pipeline
+Detailed documentation is available at [ReadTheDocs](https://gene-expression-tool.readthedocs.io/).
 
-```python
-from gene_expression_analysis import *
-
-# Load and preprocess data
-data = load_and_preprocess_data("expression_data.csv")
-
-# Perform PCA
-pcs, pca_model = perform_pca(data)
-
-# Cluster data
-labels, kmeans = cluster_data(pcs)
-
-# Visualize results
-visualize_results(pcs, labels, pca_model, data)
-```
-
-### Advanced Features
-
-```python
-# Differential Expression Analysis
-de_results = perform_differential_expression(data, group1_ids=['sample1', 'sample2'], group2_ids=['sample3', 'sample4'])
-create_volcano_plot(de_results)
-
-# Batch Effect Correction
-batch_labels = ['batch1', 'batch1', 'batch2', 'batch2']
-corrected_data = correct_batch_effects(data, batch_labels)
-
-# Quality Control
-qc_metrics = calculate_quality_metrics(data)
-
-# Hierarchical Clustering
-hierarch_results = perform_hierarchical_clustering(data)
-```
+API reference: [API Documentation](https://gene-expression-tool.readthedocs.io/api.html)
 
 ## Data Format
 
@@ -105,9 +142,29 @@ Sample1,5.2,3.1,4.5
 Sample2,6.1,2.8,4.2
 ```
 
-## Contributing
+## 🤝 Contributing
 
-Feel free to submit issues, fork the repository, and create pull requests for any improvements.
+We welcome contributions! 
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 Citation
+
+If you use this tool in your research, please cite:
+
+```bibtex
+@software{gene_expression_tool,
+  author = {Cotta, Yan P.},
+  title = {Gene Expression Analysis Tool},
+  year = {2025},
+  publisher = {GitHub},
+  url = {https://github.com/YanCotta/GeneExpressionAnalysisTool}
+}
+```
 
 ## License
 
