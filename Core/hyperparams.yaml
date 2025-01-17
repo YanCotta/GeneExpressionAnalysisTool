@@ -1,0 +1,28 @@
+data_processing:
+  min_expression: 0.1
+  normalization_method: 'tmm'
+  missing_value_threshold: 0.3
+
+pca:
+  min_variance_explained: 0.9
+  max_components: 50
+  scale_data: true
+
+clustering:
+  kmeans:
+    max_clusters: 10
+    n_init: 10
+    random_state: 42
+  dbscan:
+    eps: 0.5
+    min_samples: 5
+
+differential_expression:
+  p_value_threshold: 0.05
+  fold_change_threshold: 1.0
+  adjustment_method: 'fdr_bh'
+
+visualization:
+  figure_size: [10, 8]
+  dpi: 300
+  color_palette: 'viridis'
