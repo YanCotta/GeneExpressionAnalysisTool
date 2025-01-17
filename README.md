@@ -110,7 +110,6 @@ clustering:
 - Type hints for all functions
 - Comprehensive error handling
 - Input validation checks
-- Changed
 - Improved PCA visualization
 - Enhanced documentation
 - Optimized data preprocessing
@@ -133,7 +132,7 @@ clustering:
 
 ## Contributing
 
-Please review our contribution guidelines in CONTRIBUTING.md. All PRs should pass our test suite and maintain code coverage.
+Feel free to contribute as much as you want!
 
 ## License
 
