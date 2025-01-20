@@ -92,7 +92,11 @@ clustering:
 
 ## Changelog
 
-### v3.0.0 (Current)
+### v.3.5.0 (current)
+- fixed numerous inconsistencies and better integrated the project structure and its modules 
+- Updated changelog with v.4.0.0 needed improvements 
+
+### v3.0.0 (01/05)
 - Implemented GPU-accelerated PCA
 - Added parallel processing support
 - Enhanced clustering algorithms
@@ -117,18 +121,44 @@ clustering:
 
 ## Roadmap
 
-### v3.1.0 (Planned)
-- Deep learning integration for expression pattern recognition
-- Interactive visualization dashboard
-- REST API for remote processing
-- Cloud deployment support
-- Automated report generation
+### v4.0.0 (Planned)
+#### Improve project structure:
+GeneExpressionAnalysisTool/
+├── tests/                    # Missing comprehensive test suite
+├── examples/                 # Missing example notebooks
+├── docs/                    # Missing detailed documentation
+└── requirements/            # Split requirements by environment
 
-### v3.2.0 (Future)
-- Single-cell RNA-seq analysis support
-- Integration with external databases
-- Advanced batch effect correction
-- Transfer learning capabilities
+#### Add Essential Bioinformatics Features:
+- Batch effect correction
+- Multiple testing correction
+- Gene set enrichment analysis
+- Quality control metrics
+- Differential expression analysis
+
+#### Enhance Testing:
+- Unit tests for all components
+- Integration tests
+- Test with real RNA-seq datasets
+
+#### Improve Documentation:
+- Add docstrings with biological context
+- Create user guide
+- Add example workflows
+- Document statistical methods
+
+#### Optimize Performance:
+- Implement parallel processing
+- Add progress tracking
+- Optimize memory usage
+- Add checkpointing
+
+#### Add Visualization:
+- PCA plots
+- Heatmaps
+- Volcano plots
+- Quality control visualizations
+
 
 ## Contributing
 
