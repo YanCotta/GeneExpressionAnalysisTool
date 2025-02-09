@@ -1,19 +1,44 @@
-# Gene Expression Analysis Tool
+# Gene Expression Analysis Tool 🧬
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Documentation Status](https://readthedocs.org/projects/gene-expression-analysis-tool/badge/?version=latest)](https://gene-expression-analysis-tool.readthedocs.io)
+[![Testing Status](https://github.com/YanCotta/GeneExpressionAnalysisTool/workflows/tests/badge.svg)](https://github.com/YanCotta/GeneExpressionAnalysisTool/actions)
 
-A professional-grade gene expression analysis toolkit implementing robust statistical methods and machine learning algorithms, optimized for high-performance computing environments.
+> A professional-grade gene expression analysis toolkit implementing state-of-the-art statistical methods and machine learning algorithms, optimized for high-performance computing environments.
 
-## Project Structure
+## 📚 Table of Contents
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Technical Overview](#-technical-overview)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Usage Example](#-usage-example)
+- [Configuration](#-configuration)
+- [Changelog](#-changelog)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Citation](#-citation)
+- [Contact](#-contact)
 
+## ✨ Features
+- **High Performance**: GPU-accelerated computations with CUDA support
+- **Robust Statistics**: Implements TMM/RLE/Quantile normalization
+- **Advanced ML**: Multi-algorithm clustering with automatic hyperparameter optimization
+- **Quality Control**: Comprehensive metrics and validation tools
+- **Scalability**: Parallel processing and distributed computing support
+
+## 📁 Project Structure
 ```
-Core/
-├── utils.py           # Core statistical and preprocessing utilities
-├── model_training.py  # ML model implementations and training logic
-├── model_evaluation.py # Evaluation metrics and validation tools
-├── main.py           # Pipeline orchestration and CLI interface
-└── hyperparams.yaml  # Configuration and hyperparameters
+GeneExpressionAnalysisTool/
+├── Core/
+│   ├── utils.py           # Core statistical and preprocessing utilities
+│   ├── model_training.py  # ML model implementations and training logic
+│   ├── model_evaluation.py # Evaluation metrics and validation tools
+│   ├── main.py           # Pipeline orchestration and CLI interface
+│   └── hyperparams.yaml  # Configuration and hyperparameters
 ```
 
 ## Technical Overview
@@ -44,12 +69,43 @@ Core/
    - Progress logging
    - Error handling
 
-## Installation
+## 🚀 Installation
 
+1. Clone the repository:
 ```bash
 git clone https://github.com/username/GeneExpressionAnalysisTool.git
-cd GeneExpressionAnalysisTool
+```
+
+2. Create a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or
+.\venv\Scripts\activate  # Windows
+```
+
+3. Install dependencies:
+```bash
 pip install -r requirements.txt
+```
+
+## ⚡ Quick Start
+```python
+from Core.main import GeneExpressionAnalysis
+
+# One-line analysis
+results = GeneExpressionAnalysis().analyze("data.csv")
+
+# Advanced usage with custom settings
+analysis = GeneExpressionAnalysis(
+    config_path="Core/hyperparams.yaml",
+    use_gpu=True
+)
+results = analysis.run_pipeline(
+    data_path="expression_data.csv",
+    metadata_path="metadata.csv",
+    output_dir="results"
+)
 ```
 
 ## Usage Example
@@ -90,11 +146,13 @@ clustering:
     n_init: 10
 ```
 
-## Changelog
+## 📋 Changelog
 
-### v.3.5.0 (current)
-- fixed numerous inconsistencies and better integrated the project structure and its modules 
-- Updated changelog with v.4.0.0 needed improvements 
+### v3.5.0 (current)
+> 🔨 Maintenance Release
+- Fixed numerous inconsistencies
+- Better integrated project structure and modules
+- Updated changelog with v4.0.0 improvements
 
 ### v3.0.0 (01/05)
 - Implemented GPU-accelerated PCA
@@ -119,15 +177,19 @@ clustering:
 - Optimized data preprocessing
 - Updated dependency requirements
 
-## Roadmap
+## 🗺️ Roadmap
 
 ### v4.0.0 (Planned)
-#### Improve project structure:
+> 🎯 Major Release Focus: Complete Framework Overhaul
+
+#### 🏗️ Improve Project Structure
+```
 GeneExpressionAnalysisTool/
-├── tests/                    # Missing comprehensive test suite
-├── examples/                 # Missing example notebooks
-├── docs/                    # Missing detailed documentation
-└── requirements/            # Split requirements by environment
+├── tests/                    # Comprehensive test suite
+├── examples/                 # Example notebooks
+├── docs/                    # Detailed documentation
+└── requirements/            # Environment-specific requirements
+```
 
 #### Add Essential Bioinformatics Features:
 - Batch effect correction
@@ -159,16 +221,15 @@ GeneExpressionAnalysisTool/
 - Volcano plots
 - Quality control visualizations
 
+## 🤝 Contributing
 
-## Contributing
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-Feel free to contribute as much as you want!
+## 📜 License
 
-## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-MIT License - see LICENSE file for details.
-
-## Citation
+## 📝 Citation
 
 ```bibtex
 @software{gene_expression_tool,
@@ -180,10 +241,14 @@ MIT License - see LICENSE file for details.
 }
 ```
 
-## Contact
+## 📫 Contact
 
-Yan P. Cotta - yanpcotta@gmail.com
+- **Author**: Yan P. Cotta
+- **Email**: yanpcotta@gmail.com
+- **GitHub**: [@YanCotta](https://github.com/YanCotta)
 
 ---
 
-Built with Python 3.8+, PyTorch, and scikit-learn.
+<div align="center">
+  <sub>Built with ❤️ using Python 3.8+, PyTorch, and scikit-learn.</sub>
+</div>
